@@ -121,7 +121,7 @@
 
 
 .browsejs.dragover .gallery-grid {
-    border: 2px dotted var(--selection-color);
+    border-color: var(--selection-color);
 }
 .browsejs.dragover .gallery-grid > * {
     opacity: 0.7;
