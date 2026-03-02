@@ -37,7 +37,7 @@ function svgFolderIcon(label, bg = '#ffd7a8', w = 420, h = 320) {
 }
 
 const DEFAULT_ICON_RULES = [
-    { icon: svgDocumentIcon('IMG', '#c7ddff'), typeMatch: t => t.startsWith('image/'), exts: ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.svg'] },
+    { icon: svgDocumentIcon('IMG', '#c7ddff'), typeMatch: t => t.startsWith('image/'), exts: ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.svg', '.avif'] },
     { icon: svgDocumentIcon('PDF', '#ffd7d7'), typeMatch: t => t === 'application/pdf', exts: ['.pdf'] },
     { icon: svgDocumentIcon('AUD', '#e6dcff'), typeMatch: t => t.startsWith('audio/'), exts: ['.mp3', '.wav', '.m4a', '.flac'] },
     { icon: svgDocumentIcon('VID', '#dff7ff'), typeMatch: t => t.startsWith('video/'), exts: ['.mp4', '.mov', '.webm', '.mkv'] },
