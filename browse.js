@@ -134,11 +134,11 @@ export class BrowseJS {
         this.galleryEl.tabIndex = 0;
 
         // drag & drop support: highlight container on dragover, accept drops
-        this.container.addEventListener('dragover', (e) => {
+        document.addEventListener('dragover', (e) => {
             e.preventDefault();
             this.container.classList.add('dragover');
         });
-        this.container.addEventListener('dragleave', (e) => {
+        document.addEventListener('dragleave', (e) => {
             this.container.classList.remove('dragover');
         });
         this.container.addEventListener('drop', (e) => {
