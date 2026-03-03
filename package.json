@@ -21,8 +21,7 @@
   "type": "commonjs",
   "main": "dist/browse.js",
   "scripts": {
-    "build": "tsc && cp src/browse.js dist/browse.js && lessc src/style.less dist/style.css",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc && cp src/browse.js dist/browse.js && lessc src/style.less dist/style.css"
   },
   "devDependencies": {
     "less": "^4.5.1",
