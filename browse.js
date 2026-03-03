@@ -180,6 +180,7 @@ export class BrowseJS {
             card.className = 'card';
             card.type = 'button';
             card.dataset.index = i;
+            card.title = f.name;
 
             const img = document.createElement('img');
             img.alt = f.name || '';
