@@ -1,5 +1,5 @@
 // Demo initialization with generated thumbnails and folders using the class
-import { BrowseJS } from '../browse.js';
+import { BrowseJS } from '../src/browse.js';
 
 function svgDataUrl(text, bg = '#c7ddff', w = 480, h = 320) {
     const safeText = String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
