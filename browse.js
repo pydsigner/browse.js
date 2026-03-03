@@ -194,12 +194,6 @@ export class BrowseJS {
             card.appendChild(meta);
 
             if (f.children && Array.isArray(f.children)) {
-                const badge = document.createElement('div');
-                badge.className = 'meta';
-                badge.style.fontSize = '12px';
-                badge.style.color = '#64748b';
-                badge.textContent = `${f.children.length} item${f.children.length !== 1 ? 's' : ''}`;
-                card.appendChild(badge);
                 card.addEventListener('click', () => this.enterFolder(i));
                 card.addEventListener('keyup', (e) => { if (e.key === 'Enter') this.enterFolder(i); });
             } else {
