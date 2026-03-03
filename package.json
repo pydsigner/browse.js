@@ -1,0 +1,32 @@
+{
+  "name": "browse.js",
+  "version": "0.0.1",
+  "description": "A lightweight yet versatile file browser written in vanilla JS.",
+  "keywords": [
+    "file",
+    "browser",
+    "chooser",
+    "widget"
+  ],
+  "homepage": "https://github.com/pydsigner/browse.js#readme",
+  "bugs": {
+    "url": "https://github.com/pydsigner/browse.js/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pydsigner/browse.js.git"
+  },
+  "license": "Apache-2.0",
+  "author": "Daniel Foerster <df@d48.io> (https://d48.io)",
+  "type": "commonjs",
+  "main": "dist/browse.js",
+  "scripts": {
+    "build": "tsc && terser src/browse.js -o dist/browse.js && terser src/browse.js -c -o dist/browse.min.js && lessc src/style.less dist/style.css",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "less": "^4.5.1",
+    "terser": "^5.46.0",
+    "typescript": "^5.9.3"
+  }
+}
