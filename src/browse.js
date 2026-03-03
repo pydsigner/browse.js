@@ -64,6 +64,13 @@ const DEFAULT_ICON_RULES = [
  */
 
 /**
+ * @typedef {Object} FileAction
+ * @property {string} [icon] - Optional icon URL
+ * @property {string} [label] - Label for the action
+ * @property {function(FileItem):void} action - Callback invoked when the action is selected.
+ */
+
+/**
  * @typedef {Object} BrowseJSOptions
  * @property {string} [rootName] - The display name for the root folder (default: "Root")
  * @property {function(FileItem, number):void} [onSelect] - Callback when a file is selected, receives the file item and its index
@@ -75,6 +82,7 @@ const DEFAULT_ICON_RULES = [
  * @property {boolean} [multiSelect] - If true, allows selecting multiple files (default: false)
  * @property {function(string):?(FileItem)} [onCreateFolder] - Optional callback invoked when creating a new folder. If it returns a FileItem, it will be added to the current folder.
  * @property {function(File[]):?(FileItem|FileItem[])} [onUpload] - Optional callback invoked when files are uploaded. If it returns FileItem(s), they'll be added to the current folder.
+ * @property {function(FileItem):FileAction[]} [onContext] - Optional callback invoked when the context menu is activated for a file. If it returns FileActions, they'll be displayed in the context menu.
  */
 
 export class BrowseJS {
@@ -192,6 +200,65 @@ export class BrowseJS {
 
             card.appendChild(img);
             card.appendChild(meta);
+
+            if (this.opts.onContext) {
+                const menu = document.createElement('div');
+                menu.className = 'ctx-menu';
+                menu.textContent = '…';
+                menu.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const prevSel = this.galleryEl.getElementsByClassName('ctx-menu selected').item(0);
+                    if (prevSel) {
+                        prevSel.removeChild(prevSel.getElementsByClassName('ctx-popup').item(0));
+                        prevSel.classList.remove('selected');
+                    }
+                    menu.classList.add('selected');
+                    const ctxItems = this.opts.onContext(f);
+
+                    const ctxPop = document.createElement('div');
+                    ctxPop.className = 'ctx-popup';
+
+                    // Avoid menu clipping
+                    const gridWidth = window.getComputedStyle(this.galleryEl).getPropertyValue('grid-template-columns').split(' ').length;
+                    if (i % gridWidth === 0 || gridWidth - (i % gridWidth) > 2) {
+                        ctxPop.classList.add('ctx-right');
+                    } else {
+                        ctxPop.classList.add('ctx-left');
+                    }
+
+                    ctxItems.forEach((item) => {
+                        const ctxEntry = document.createElement('div');
+                        ctxEntry.className = 'ctx-item';
+                        if (item.icon) {
+                            const ctxIcon = document.createElement('img');
+                            ctxIcon.src = item.icon;
+                            ctxEntry.appendChild(ctxIcon);
+                        }
+                        if (item.label) {
+                            ctxEntry.appendChild(document.createTextNode(item.label));
+                        }
+                        ctxEntry.addEventListener('click', (e) => {
+                            item.action(f);
+                            console.log('entry', e, menu, ctxPop);
+                            menu.removeChild(ctxPop);
+                            menu.classList.remove('selected');
+                            e.stopPropagation();
+                        }, {once: true});
+                        ctxPop.appendChild(ctxEntry);
+                    });
+                    this.container.addEventListener('click', () => {
+                        // May have already been triggered by another handler
+                        // above.
+                        try {
+                            menu.removeChild(ctxPop);
+                            menu.classList.remove('selected');
+                        }
+                        catch {}
+                    }, {once: true});
+                    menu.appendChild(ctxPop);
+                });
+                card.appendChild(menu);
+            }
 
             if (f.children && Array.isArray(f.children)) {
                 card.addEventListener('click', () => this.enterFolder(i));

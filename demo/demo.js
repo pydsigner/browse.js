@@ -59,6 +59,12 @@ const sharedOpts = {
             return { name: f.name, thumbnail: thumb, meta: { size: f.size, type: f.type } };
         }));
         return items;
+    },
+    onContext(file) {
+        return [
+            {label: 'Log', action: console.log},
+            {label: 'Do Absolutely Nothing!', action: () => {}}
+        ];
     }
 };
 
