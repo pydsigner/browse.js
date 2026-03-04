@@ -36,6 +36,11 @@ function svgFolderIcon(label, bg = '#ffd7a8', w = 420, h = 320) {
     return svgDataUrlFromSvg(svg);
 }
 
+const svgContextActionIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">' +
+    '<path stroke="currentColor" stroke-linecap="round" stroke-width="3" d="M6 12 h0.01"></path>' +
+    '<path stroke="currentColor" stroke-linecap="round" stroke-width="3" d="M12 12 h0.01"></path>' +
+    '<path stroke="currentColor" stroke-linecap="round" stroke-width="3" d="M18 12 h0.01"></path></svg>';
+
 const DEFAULT_ICON_RULES = [
     { icon: svgDocumentIcon('IMG', '#c7ddff'), typeMatch: t => t.startsWith('image/'), exts: ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.svg', '.avif'] },
     { icon: svgDocumentIcon('PDF', '#ffd7d7'), typeMatch: t => t === 'application/pdf', exts: ['.pdf'] },
@@ -204,7 +209,7 @@ export class BrowseJS {
             if (this.opts.onContext) {
                 const menu = document.createElement('div');
                 menu.className = 'ctx-menu';
-                menu.textContent = '…';
+                menu.innerHTML = svgContextActionIcon;
                 menu.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const prevSel = this.galleryEl.getElementsByClassName('ctx-menu selected').item(0);
