@@ -4,14 +4,14 @@
     display: grid;
     grid-template-columns: 1fr 280px;
     grid-template-rows: auto 1fr;
-    grid-template-areas: "breadcrumb breadcrumb" "gallery details";
+    grid-template-areas: "controls controls" "file-browser details";
     gap: var(--gap);
 
     button {
         font-family: inherit;
     }
 
-    .card {
+    .brj-file-entry {
         background: transparent;
         border: 2px solid transparent;
         border-radius: 8px;
@@ -27,7 +27,7 @@
             object-fit: contain;
             display: block;
         }
-        .meta {
+        .brj-meta {
             padding: 3px;
             font-size: 13px;
             color: #0b1220;
@@ -36,11 +36,7 @@
             text-overflow: ellipsis;
         }
 
-        .editable-name {
-            padding: 3px;
-        }
-
-        .ctx-menu {
+        .brj-ctx-menu {
             position: absolute;
             right: 2px;
             top: 2px;
@@ -51,7 +47,7 @@
             color: #fff;
             display: none;
 
-            .ctx-popup {
+            .brj-ctx-popup {
                 position: absolute;
                 z-index: 1;
                 top: 50%;
@@ -64,14 +60,14 @@
                 min-width: 100px;
                 overflow: hidden;
 
-                &.ctx-right {
+                &.brj-ctx-right {
                     left: 50%;
                 }
-                &.ctx-left {
+                &.brj-ctx-left {
                     right: 50%;
                 }
 
-                .ctx-item {
+                .brj-ctx-item {
                     display: flex;
                     min-width: 100%;
                     width: max-content;
@@ -92,20 +88,20 @@
                 }
             }
         }
-        &:hover .ctx-menu, .ctx-menu.selected {
+        &:hover .brj-ctx-menu, .brj-ctx-menu.selected {
             display: block;
         }
 
-        &.selected {
+        &.brj-selected {
             border-color: var(--selection-color);
             box-shadow: 0 6px 18px #2463ff1f;
         }
     }
 
-    .gallery-grid {
+    .brj-file-browser {
         box-sizing: border-box;
         border: 2px dotted transparent;
-        grid-area: gallery;
+        grid-area: file-browser;
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         grid-auto-rows: max-content;
@@ -114,7 +110,7 @@
         overflow-y: auto;
     }
 
-    .details {
+    .brj-detail-pane {
         background: #fff;
         border-radius: 8px;
         padding: var(--gap);
@@ -122,7 +118,7 @@
         grid-area: details;
     }
 
-    .preview {
+    .brj-preview {
         width: 100%;
         height: 180px;
         object-fit: contain;
@@ -132,20 +128,20 @@
         margin-bottom: 10px;
     }
 
-    .small {
+    .brj-small {
         font-size: 13px;
         color: #475569;
     }
 
-    .breadcrumb {
+    .brj-controls {
         display: flex;
         gap: 8px;
         align-items: center;
         justify-content: space-between;
         margin-top: 8px;
-        grid-area: breadcrumb;
+        grid-area: controls;
 
-        .crumb {
+        .brj-breadcrumb-entry {
             background: transparent;
             border: 0;
             padding: 4px 6px;
@@ -156,14 +152,14 @@
                 background: #2463ff0f;
             }
         }
-        .sep {
+        .brj-breadcrumb-sep {
             color: #94a3b8;
         }
     }
 
-    &.dragover .gallery-grid {
+    &.dragover .brj-file-grid {
         border-color: var(--selection-color);
-        .card {
+        .brj-file-entry {
             opacity: 0.7;
         }
     }
@@ -172,9 +168,9 @@
         padding: 0 10px;
         grid-template-columns: 1fr;
         grid-template-rows: auto 1fr max-content;
-        grid-template-areas: "breadcrumb" "gallery" "details";
+        grid-template-areas: "controls" "file-browser" "details";
 
-        .details {
+        .brj-detail-pane {
             min-height: initial;
         }
     }

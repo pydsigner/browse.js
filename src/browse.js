@@ -111,40 +111,37 @@ export class BrowseJS {
         this.selectedIndices = new Set();
         this.stack = [{ name: opts.rootName || 'Root', files }];
 
-        // create breadcrumb and details elements and insert around the gallery container
-        this.breadcrumbEl = document.createElement('nav');
-        this.breadcrumbEl.className = 'breadcrumb';
-        this.breadcrumbEl.setAttribute('aria-label', 'Breadcrumb');
-
-        // crumbs wrapper and controls container
-        this.crumbsWrap = document.createElement('div');
-        this.crumbsWrap.className = 'crumbs-wrap';
-        this.controlsEl = document.createElement('div');
-        this.controlsEl.className = 'crumb-controls';
-        this.breadcrumbEl.appendChild(this.crumbsWrap);
-        this.breadcrumbEl.appendChild(this.controlsEl);
+        this.controlsEl = document.createElement('nav');
+        this.controlsEl.className = 'brj-controls';
+        this.controlsEl.setAttribute('aria-label', 'Breadcrumb');
+        this.breadcrumbEl = document.createElement('div');
+        this.breadcrumbEl.className = 'brj-breadcrumb';
+        this.actionsEl = document.createElement('div');
+        this.actionsEl.className = 'brj-actions';
+        this.controlsEl.appendChild(this.breadcrumbEl);
+        this.controlsEl.appendChild(this.actionsEl);
 
         this.detailsEl = document.createElement('aside');
-        this.detailsEl.className = 'details';
+        this.detailsEl.className = 'brj-detail-pane';
         this.detailsEl.setAttribute('aria-live', 'polite');
         this.detailsEl.textContent = opts.detailsText || 'Select a file';
 
-        // Insert breadcrumb, gallery grid and details inside the gallery container
         this.container.innerHTML = '';
-        this.galleryEl = document.createElement('div');
-        this.galleryEl.className = 'gallery-grid';
-        this.container.appendChild(this.breadcrumbEl);
-        this.container.appendChild(this.galleryEl);
+        this.fileGridEl = document.createElement('div');
+        this.fileGridEl.className = 'brj-file-browser';
+        this.container.appendChild(this.controlsEl);
+        this.container.appendChild(this.fileGridEl);
         this.container.appendChild(this.detailsEl);
 
+        // Create a hidden file input for uploader
         this._fileInput = document.createElement('input');
         this._fileInput.type = 'file';
         this._fileInput.style.display = 'none';
         this.container.appendChild(this._fileInput);
 
-        // bind events to the inner gallery grid
         this.container.classList.add('browsejs');
-        this.galleryEl.tabIndex = 0;
+        // Allow easy keyboard navigation to the file list
+        this.fileGridEl.tabIndex = 0;
 
         // drag & drop support: highlight container on dragover, accept drops
         document.addEventListener('dragover', (e) => {
@@ -186,11 +183,11 @@ export class BrowseJS {
     }
 
     render() {
-        this.galleryEl.innerHTML = '';
+        this.fileGridEl.innerHTML = '';
         const list = this.currentFiles();
         list.forEach((f, i) => {
             const card = document.createElement('button');
-            card.className = 'card';
+            card.className = 'brj-file-entry';
             card.type = 'button';
             card.dataset.index = i;
             card.title = f.name;
@@ -200,7 +197,7 @@ export class BrowseJS {
             img.src = f.thumbnail || this.getIconForItem(f);
 
             const meta = document.createElement('div');
-            meta.className = 'meta';
+            meta.className = 'brj-meta';
             meta.textContent = f.name;
 
             card.appendChild(img);
@@ -208,32 +205,32 @@ export class BrowseJS {
 
             if (this.opts.onContext) {
                 const menu = document.createElement('div');
-                menu.className = 'ctx-menu';
+                menu.className = 'brj-ctx-menu';
                 menu.innerHTML = svgContextActionIcon;
                 menu.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    const prevSel = this.galleryEl.getElementsByClassName('ctx-menu selected').item(0);
+                    const prevSel = this.fileGridEl.getElementsByClassName('brj-ctx-menu brj-selected').item(0);
                     if (prevSel) {
-                        prevSel.removeChild(prevSel.getElementsByClassName('ctx-popup').item(0));
+                        prevSel.removeChild(prevSel.getElementsByClassName('brj-ctx-popup').item(0));
                         prevSel.classList.remove('selected');
                     }
-                    menu.classList.add('selected');
+                    menu.classList.add('brj-selected');
                     const ctxItems = this.opts.onContext(f);
 
                     const ctxPop = document.createElement('div');
-                    ctxPop.className = 'ctx-popup';
+                    ctxPop.className = 'brj-ctx-popup';
 
                     // Avoid menu clipping
-                    const gridWidth = window.getComputedStyle(this.galleryEl).getPropertyValue('grid-template-columns').split(' ').length;
+                    const gridWidth = window.getComputedStyle(this.fileGridEl).getPropertyValue('grid-template-columns').split(' ').length;
                     if (i % gridWidth === 0 || gridWidth - (i % gridWidth) > 2) {
-                        ctxPop.classList.add('ctx-right');
+                        ctxPop.classList.add('bjr-ctx-right');
                     } else {
-                        ctxPop.classList.add('ctx-left');
+                        ctxPop.classList.add('brj-ctx-left');
                     }
 
                     ctxItems.forEach((item) => {
                         const ctxEntry = document.createElement('div');
-                        ctxEntry.className = 'ctx-item';
+                        ctxEntry.className = 'brj-ctx-item';
                         if (item.icon) {
                             const ctxIcon = document.createElement('img');
                             ctxIcon.src = item.icon;
@@ -246,7 +243,7 @@ export class BrowseJS {
                             item.action(f);
                             console.log('entry', e, menu, ctxPop);
                             menu.removeChild(ctxPop);
-                            menu.classList.remove('selected');
+                            menu.classList.remove('brj-selected');
                             e.stopPropagation();
                         }, {once: true});
                         ctxPop.appendChild(ctxEntry);
@@ -256,7 +253,7 @@ export class BrowseJS {
                         // above.
                         try {
                             menu.removeChild(ctxPop);
-                            menu.classList.remove('selected');
+                            menu.classList.remove('brj-selected');
                         }
                         catch {}
                     }, {once: true});
@@ -273,18 +270,18 @@ export class BrowseJS {
                 card.addEventListener('keyup', (e) => { if (e.key === 'Enter') this.select(i); });
             }
 
-            this.galleryEl.appendChild(card);
+            this.fileGridEl.appendChild(card);
         });
         this.updateSelectionUI();
         this.renderBreadcrumb();
     }
 
     updateSelectionUI() {
-        const cards = this.galleryEl.querySelectorAll('.card');
+        const cards = this.fileGridEl.querySelectorAll('.brj-file-entry');
         cards.forEach(c => {
             const idx = Number(c.dataset.index);
-            if (this.selectedIndices.has(idx)) c.classList.add('selected');
-            else c.classList.remove('selected');
+            if (this.selectedIndices.has(idx)) c.classList.add('brj-selected');
+            else c.classList.remove('brj-selected');
         });
         this.renderDetails();
     }
@@ -292,7 +289,7 @@ export class BrowseJS {
     renderDetails() {
         if (!this.detailsEl) return;
         const activeList = this.currentFiles();
-        if (this.selectedIndices.size === 0) { this.detailsEl.innerHTML = '<p class="small">No selection</p>'; }
+        if (this.selectedIndices.size === 0) { this.detailsEl.innerHTML = '<p class="brj-small">No selection</p>'; }
         // If multiple selected, show a simple list and count
         else if (this.selectedIndices.size > 1) {
             const indices = Array.from(this.selectedIndices).sort();
@@ -308,11 +305,11 @@ export class BrowseJS {
         else {
             const index = Array.from(this.selectedIndices)[0];
             const item = activeList[index];
-            if (!item) { this.detailsEl.innerHTML = '<p class="small">No selection</p>'; return; }
+            if (!item) { this.detailsEl.innerHTML = '<p class="brj-small">No selection</p>'; return; }
             this.detailsEl.innerHTML = '';
             const img = document.createElement('img');
             img.className = 'preview';
-            img.src = item.thumbnail || this.galleryEl.querySelector(`.card[data-index="${index}"] img`)?.src || this.getIconForItem(item);
+            img.src = item.thumbnail || this.fileGridEl.querySelector(`.brj-file-entry[data-index="${index}"] img`)?.src || this.getIconForItem(item);
             img.alt = item.name || 'preview';
             const name = document.createElement('div');
             name.innerHTML = `<strong>${item.name || 'Untitled'}</strong>`;
@@ -334,40 +331,42 @@ export class BrowseJS {
     }
 
     renderBreadcrumb() {
-        if (!this.breadcrumbEl) return;
-        this.crumbsWrap.innerHTML = '';
+        if (!this.controlsEl) return;
+        this.breadcrumbEl.innerHTML = '';
         this.stack.forEach((s, idx) => {
             const btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = 'crumb';
+            btn.className = 'brj-breadcrumb-entry';
             btn.textContent = s.name;
             btn.addEventListener('click', () => this.goToCrumb(idx));
-            this.crumbsWrap.appendChild(btn);
+            this.breadcrumbEl.appendChild(btn);
             if (idx < this.stack.length - 1) {
-                const sep = document.createElement('span'); sep.className = 'sep'; sep.textContent = '»';
-                this.crumbsWrap.appendChild(sep);
+                const sep = document.createElement('span');
+                sep.className = 'brj-breadcrumb-sep';
+                sep.textContent = '»';
+                this.breadcrumbEl.appendChild(sep);
             }
         });
 
-        this.controlsEl.innerHTML = '';
+        this.actionsEl.innerHTML = '';
         const hasCreate = typeof this.opts.onCreateFolder === 'function';
         const hasUpload = typeof this.opts.onUpload === 'function';
         if (hasCreate) {
             const createBtn = document.createElement('button');
             createBtn.type = 'button';
-            createBtn.className = 'crumb-action';
+            createBtn.className = 'brj-action';
             createBtn.textContent = 'New Folder';
             createBtn.addEventListener('click', () => this.handleCreateFolder());
-            this.controlsEl.appendChild(createBtn);
+            this.actionsEl.appendChild(createBtn);
         }
 
         if (hasUpload) {
             const uploadBtn = document.createElement('button');
             uploadBtn.type = 'button';
-            uploadBtn.className = 'crumb-action';
+            uploadBtn.className = 'brj-action';
             uploadBtn.textContent = 'Upload';
             uploadBtn.addEventListener('click', () => this.handleUpload());
-            this.controlsEl.appendChild(uploadBtn);
+            this.actionsEl.appendChild(uploadBtn);
         }
     }
 
@@ -402,27 +401,23 @@ export class BrowseJS {
         const current = this.currentFiles();
 
         const card = document.createElement('div');
-        card.className = 'card creating';
+        card.className = 'brj-file-entry brj-creating';
         card.tabIndex = 0;
 
         const img = document.createElement('img');
         img.alt = 'Folder';
         img.src = this.folderIcon;
 
-        const meta = document.createElement('div');
-        meta.className = 'meta';
-
         const nameEl = document.createElement('div');
-        nameEl.className = 'editable-name';
+        nameEl.className = 'brj-meta';
         nameEl.contentEditable = 'true';
         nameEl.spellcheck = false;
         nameEl.textContent = '';
 
-        meta.appendChild(nameEl);
         card.appendChild(img);
-        card.appendChild(meta);
+        card.appendChild(nameEl);
 
-        this.galleryEl.insertBefore(card, this.galleryEl.firstChild);
+        this.fileGridEl.prepend(card);
 
         // focus and select text
         nameEl.focus();
