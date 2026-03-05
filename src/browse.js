@@ -419,15 +419,7 @@ export class BrowseJS {
 
         this.fileGridEl.prepend(card);
 
-        // focus and select text
         nameEl.focus();
-        try {
-            const sel = window.getSelection();
-            const range = document.createRange();
-            range.selectNodeContents(nameEl);
-            sel.removeAllRanges();
-            sel.addRange(range);
-        } catch (e) { /* ignore selection errors */ }
 
         const cleanup = () => {
             this._creatingFolder = false;
