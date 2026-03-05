@@ -146,14 +146,14 @@ export class BrowseJS {
         // drag & drop support: highlight container on dragover, accept drops
         document.addEventListener('dragover', (e) => {
             e.preventDefault();
-            this.container.classList.add('dragover');
+            this.container.classList.add('brj-dragover');
         });
         document.addEventListener('dragleave', (e) => {
-            this.container.classList.remove('dragover');
+            this.container.classList.remove('brj-dragover');
         });
         this.container.addEventListener('drop', (e) => {
             e.preventDefault();
-            this.container.classList.remove('dragover');
+            this.container.classList.remove('brj-dragover');
             const files = Array.from((e.dataTransfer && e.dataTransfer.files) || []);
             if (files.length === 0) return;
             this.handleDropFiles(files);
@@ -212,7 +212,7 @@ export class BrowseJS {
                     const prevSel = this.fileGridEl.getElementsByClassName('brj-ctx-menu brj-selected').item(0);
                     if (prevSel) {
                         prevSel.removeChild(prevSel.getElementsByClassName('brj-ctx-popup').item(0));
-                        prevSel.classList.remove('selected');
+                        prevSel.classList.remove('brj-selected');
                     }
                     menu.classList.add('brj-selected');
                     const ctxItems = this.opts.onContext(f);
@@ -298,7 +298,7 @@ export class BrowseJS {
             header.innerHTML = `<strong>${indices.length} item${indices.length > 1 ? 's' : ''} selected</strong>`;
             this.detailsEl.appendChild(header);
             const list = document.createElement('div');
-            list.className = 'small';
+            list.className = 'brj-small';
             list.innerHTML = indices.map(i => `<div>${escapeText((activeList[i] && activeList[i].name) || 'Untitled')}</div>`).join('');
             this.detailsEl.appendChild(list);
         }
@@ -308,13 +308,13 @@ export class BrowseJS {
             if (!item) { this.detailsEl.innerHTML = '<p class="brj-small">No selection</p>'; return; }
             this.detailsEl.innerHTML = '';
             const img = document.createElement('img');
-            img.className = 'preview';
+            img.className = 'brj-preview';
             img.src = item.thumbnail || this.fileGridEl.querySelector(`.brj-file-entry[data-index="${index}"] img`)?.src || this.getIconForItem(item);
             img.alt = item.name || 'preview';
             const name = document.createElement('div');
             name.innerHTML = `<strong>${item.name || 'Untitled'}</strong>`;
             const meta = document.createElement('div');
-            meta.className = 'small';
+            meta.className = 'brj-small';
 
             if (item.meta && typeof item.meta === 'object') {
                 meta.innerHTML = Object.entries(item.meta).map(([k, v]) => `<div><strong>${k}:</strong> ${v}</div>`).join('');
