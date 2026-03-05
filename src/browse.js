@@ -427,7 +427,7 @@ export class BrowseJS {
         };
 
         const commit = async () => {
-            const name = nameEl.textContent.trim();
+            const name = (nameEl.textContent.match(/[a-zA-Z0-9 \-_()]+/g) || []).join('').trim();
             if (!name) { cleanup(); return; }
             if (typeof this.opts.onCreateFolder === 'function') {
                 const res = await this.opts.onCreateFolder(name);
